@@ -18,7 +18,7 @@ model Quote {
   lastName     String
   email        String
   phone        String
-  services     ServiceType
+  services     String
   NoOfServices Int
   comments     String
 }
@@ -30,8 +30,41 @@ model Contact {
   message     String
 }
 
-enum ServiceType {
-  Service_Type_1
-  Service_Type_2
-  Service_Type_3
+model Service {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  title       String   
+  description String   
+  image       String    // Store the image path in the DB
+  price       Float    
+  status      String   @default("active")
 }
+
+model testimonials {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  fullName      String   
+  description String   
+  image       String    // Store the image path in the DB  
+  status      String   @default("active")
+}
+
+// schema.prisma
+
+model User {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  fullname    String  
+  role        String  
+  linkedin    String? 
+  instagram   String? 
+  twitter     String? 
+  email       String  
+  image       String
+  phoneNumber String
+  status      String   @default("active")
+}
+
+
+
+
+
+
+

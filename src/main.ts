@@ -21,27 +21,12 @@ async function bootstrap() {
 
   const globalPrefix = "api";
   const config = new DocumentBuilder()
-    .setTitle("Refferal Allay")
-    .setDescription("Refferal Allay API description")
+    .setTitle("Agency Backend")
+    .setDescription("Agency Backend API description")
     .addServer("/api")
     .setVersion("1.0")
-    .addTag("Refferal Allay")
     .addBearerAuth()
-    .addTag("auth", "Authentication Module")
-    .addTag("users", "Users Module")
-    .addTag("user-management", "User-management Module")
-    .addTag("contacts", "Contact Module")
-    .addTag("referrals", "Referrals Module")
-    .addTag("tasks", "Task Module")
-    .addTag("chats", "Chat Module")
-    .addTag("notifications", "Notification Module")
-    .addTag("guidelines", "Guideline Module")
-    .addTag("suggestion", "suggestion Module")
-    .addTag("activity-log", "Activity-log Module")
-    .addTag("engagement-team", "Engagement-team Module")
-    .addTag("statistics", "Statistics Module")
-    .addTag("quicksite", "Quicksite Module")
-    .addTag("app", "App Module")
+
     .build();
   const document = SwaggerModule.createDocument(app, config);
 
