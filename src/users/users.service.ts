@@ -8,7 +8,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { UserInterface } from './interfaces/userInterface';
 
 
-i
+
 
 
 @Injectable()
@@ -38,9 +38,9 @@ export class UsersService {
       data: {
         fullname: CreateUserDto.fullname,
         email: CreateUserDto.email,
-        instagram: CreateUserDto.instagram,
-        twitter: CreateUserDto.twitter,
-        linkedin: CreateUserDto.linkedin,
+        instagram: CreateUserDto.instagram || '',
+        twitter: CreateUserDto.twitter || '',
+        linkedin: CreateUserDto.linkedin || '',
         role: CreateUserDto.role,
         status: CreateUserDto.status,
         phoneNumber: CreateUserDto.phoneNumber,

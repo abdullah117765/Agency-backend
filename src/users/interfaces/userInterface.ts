@@ -1,7 +1,8 @@
 // src/services/interfaces/user.interface.ts
 
 export interface UserInterface {
-    status: 'active' | 'inactive';
+    id?: string;
+    status?: string;
     fullname: string;
     role: string;
     email: string;

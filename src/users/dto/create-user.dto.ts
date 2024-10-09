@@ -31,22 +31,22 @@ export class CreateUserDto {
     @ApiProperty({ type: 'string', format: 'binary', required: true })
     image: Express.Multer.File;
 
-    @ApiProperty({ description: 'role of the user' })
+    @ApiProperty({ description: 'phone number of the user' })
     @IsNotEmpty()
     @IsString()
     phoneNumber: string;
 
-    @ApiProperty({ description: 'role of the user' })
+    @ApiProperty({ description: 'twitter of the user' })
     @IsOptional()
     @IsString()
     twitter: string;
 
-    @ApiProperty({ description: 'role of the user' })
+    @ApiProperty({ description: 'instagram of the user' })
     @IsOptional()
     @IsString()
     instagram: string;
 
-    @ApiProperty({ description: 'role of the user' })
+    @ApiProperty({ description: 'linkidin of the user' })
     @IsOptional()
     @IsString()
     linkedin: string;

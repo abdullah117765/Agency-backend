@@ -1,11 +1,15 @@
-import { forwardRef, Inject, Injectable } from '@nestjs/common';
+
+import { BadRequestException, forwardRef, Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { PrismaService } from 'src/prisma/prisma.service';
+import { PaginationDto, statusDto } from 'src/services/dto/create-service.dto';
+import { UtilsService } from 'src/utils/utils.service';
 import { CreateTestimonialDto } from './dto/create-testimonial.dto';
 import { UpdateTestimonialDto } from './dto/update-testimonial.dto';
-import { PrismaService } from 'src/prisma/prisma.service';
-import { UtilsService } from 'src/utils/utils.service';
+import { TestimonialInterface } from './interfaces/testimonialInterface';
 
 @Injectable()
 export class TestimonialsService {
+
 
   constructor(
     private readonly prismaService: PrismaService,
@@ -15,24 +19,111 @@ export class TestimonialsService {
   ) { }
 
 
+  // Create new testimonials
+  async create(CreateTestimonialDto: CreateTestimonialDto): Promise<TestimonialInterface> {
 
-  create(createTestimonialDto: CreateTestimonialDto) {
-    return 'This action adds a new testimonial';
+
+    console.log(CreateTestimonialDto.image);
+    const newtestimonila = await this.prismaService.testimonials.create({
+      data: {
+        fullName: CreateTestimonialDto.fullName,
+        description: CreateTestimonialDto.description,
+        status: CreateTestimonialDto.status,
+        image: CreateTestimonialDto.image.filename + CreateTestimonialDto.image.size,
+      }
+    })
+
+    return newtestimonila;
   }
 
-  findAll() {
-    return `This action returns all testimonials`;
+  // Get testimonials by ID
+  async findOne(id: string): Promise<TestimonialInterface> {
+    if (!id || id == '' || id == null) {
+      throw new BadRequestException('ID is required');
+    }
+
+
+    const testimonials = await this.prismaService.testimonials.findUnique({ where: { id } });
+
+    if (!testimonials) {
+      throw new NotFoundException('testimonials not found');
+    }
+
+    return testimonials;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} testimonial`;
+  // Get all services with pagination and optional status filter
+  async findAllPaginated(paginated: PaginationDto): Promise<TestimonialInterface[]> {
+
+    const { page, pageSize } = paginated;
+
+    const testimonial = await this.prismaService.testimonials.findMany({
+      skip: (page - 1) * pageSize,
+      take: pageSize,
+    });
+
+    return testimonial;
   }
 
-  update(id: number, updateTestimonialDto: UpdateTestimonialDto) {
-    return `This action updates a #${id} testimonial`;
+  // Update testimonials by ID
+  async update(id: string, UpdateTestimonialDto: UpdateTestimonialDto): Promise<TestimonialInterface> {
+
+    if (!id || id == '' || id == null) {
+      throw new BadRequestException('ID is required');
+    }
+
+    const serviceExists = await this.prismaService.testimonials.findUnique({ where: { id } });
+
+    if (!serviceExists) {
+      throw new NotFoundException('testimonials not found');
+    }
+
+    const updatedService = await this.prismaService.testimonials.update({
+      where: { id },
+      data: {
+        fullName: UpdateTestimonialDto.fullName,
+        description: UpdateTestimonialDto.description,
+        status: UpdateTestimonialDto.status,
+        image: UpdateTestimonialDto.image.filename + UpdateTestimonialDto.image.size,
+      },
+    });
+
+    return updatedService;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} testimonial`;
+  async updateStatus(id: string, statusdto: statusDto): Promise<TestimonialInterface> {
+
+    if (!id || id == '' || id == null) {
+      throw new BadRequestException('ID is required');
+    }
+
+    const serviceExists = await this.prismaService.testimonials.findUnique({ where: { id } });
+
+    if (!serviceExists) {
+      throw new NotFoundException('testimonials not found');
+    }
+
+
+    const updatedtest = await this.prismaService.testimonials.update({
+      where: { id },
+      data: { status: statusdto.status },
+    });
+
+    return updatedtest;
+  }
+
+  // Delete testimonials by ID
+  async remove(id: string): Promise<void> {
+
+    if (!id || id == '' || id == null) {
+      throw new BadRequestException('ID is required');
+    }
+    const serviceExists = await this.prismaService.testimonials.findUnique({ where: { id } });
+
+    if (!serviceExists) {
+      throw new NotFoundException('tetimonial not found');
+    }
+
+    await this.prismaService.testimonials.delete({ where: { id } });
   }
 }

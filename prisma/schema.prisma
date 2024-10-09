@@ -62,7 +62,15 @@ model User {
   status      String   @default("active")
 }
 
-
+model blogs {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  title      String   
+  author     String
+  description String   
+  image       String    // Store the image path in the DB  
+  status      String   @default("active")
+  createdAt   DateTime @default(now()) // Add createdAt field with default value
+}
 
 
 
