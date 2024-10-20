@@ -35,7 +35,7 @@ export class BlogsService {
         description: CreateBlogDto.description,
         status: CreateBlogDto.status,
         author: CreateBlogDto.author,
-        image: CreateBlogDto.image.filename + CreateBlogDto.image.size,
+        image: CreateBlogDto.image.mimetype,
       }
     })
 
@@ -59,16 +59,22 @@ export class BlogsService {
   }
 
   // Get all blogs with pagination and optional status filter
-  async findAllPaginated(paginated: PaginationDto): Promise<BlogInterface[]> {
+  async findAllPaginated(paginated: PaginationDto): Promise<{ totalCount: number; blogs: BlogInterface[] }> {
 
     const { page, pageSize } = paginated;
 
-    const services = await this.prismaService.blogs.findMany({
+    // Get total count of blogs
+    const totalCount = await this.prismaService.blogs.count();
+
+    const blogs = await this.prismaService.blogs.findMany({
       skip: (page - 1) * pageSize,
       take: pageSize,
     });
 
-    return services;
+    return {
+      totalCount,
+      blogs,
+    }
   }
 
   // Update blog by ID
@@ -91,7 +97,7 @@ export class BlogsService {
         description: UpdateBlogDto.description,
         status: UpdateBlogDto.status,
         author: UpdateBlogDto.author,
-        image: UpdateBlogDto.image.filename + UpdateBlogDto.image.size,
+        image: UpdateBlogDto.image.mimetype,
       },
     });
 

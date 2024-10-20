@@ -34,7 +34,7 @@ export class ServicesService {
         description: createServiceDto.description,
         status: createServiceDto.status,
         price: createServiceDto.price,
-        image: createServiceDto.image.filename + createServiceDto.image.size,
+        image: createServiceDto.image.mimetype + createServiceDto.image.size,
       }
     })
 

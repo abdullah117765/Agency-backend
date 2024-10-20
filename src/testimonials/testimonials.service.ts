@@ -19,17 +19,41 @@ export class TestimonialsService {
   ) { }
 
 
+
+  async updateStatus(id: string, statusdto: statusDto): Promise<TestimonialInterface> {
+
+    if (!id || id == '' || id == null) {
+      throw new BadRequestException('ID is required');
+    }
+
+    const serviceExists = await this.prismaService.testimonials.findUnique({ where: { id } });
+
+    if (!serviceExists) {
+      throw new NotFoundException('testimonials not found');
+    }
+
+
+    const updatedtest = await this.prismaService.testimonials.update({
+      where: { id },
+      data: { status: statusdto.status },
+    });
+
+    return updatedtest;
+  }
+
+
   // Create new testimonials
   async create(CreateTestimonialDto: CreateTestimonialDto): Promise<TestimonialInterface> {
 
-
-    console.log(CreateTestimonialDto.image);
+    let imageString = CreateTestimonialDto.image.mimetype + CreateTestimonialDto.image.size;
+    console.log("imageString", imageString);
+    console.log("image", CreateTestimonialDto.image);
     const newtestimonila = await this.prismaService.testimonials.create({
       data: {
         fullName: CreateTestimonialDto.fullName,
         description: CreateTestimonialDto.description,
         status: CreateTestimonialDto.status,
-        image: CreateTestimonialDto.image.filename + CreateTestimonialDto.image.size,
+        image: CreateTestimonialDto.image.mimetype,
       }
     })
 
@@ -53,17 +77,24 @@ export class TestimonialsService {
   }
 
   // Get all services with pagination and optional status filter
-  async findAllPaginated(paginated: PaginationDto): Promise<TestimonialInterface[]> {
-
+  async findAllPaginated(paginated: PaginationDto): Promise<{ totalCount: number; testimonials: TestimonialInterface[] }> {
     const { page, pageSize } = paginated;
 
-    const testimonial = await this.prismaService.testimonials.findMany({
+    // Get total count of testimonials
+    const totalCount = await this.prismaService.testimonials.count();
+
+    // Get paginated testimonials
+    const testimonials = await this.prismaService.testimonials.findMany({
       skip: (page - 1) * pageSize,
       take: pageSize,
     });
 
-    return testimonial;
+    return {
+      totalCount,
+      testimonials,
+    };
   }
+
 
   // Update testimonials by ID
   async update(id: string, UpdateTestimonialDto: UpdateTestimonialDto): Promise<TestimonialInterface> {
@@ -84,33 +115,13 @@ export class TestimonialsService {
         fullName: UpdateTestimonialDto.fullName,
         description: UpdateTestimonialDto.description,
         status: UpdateTestimonialDto.status,
-        image: UpdateTestimonialDto.image.filename + UpdateTestimonialDto.image.size,
+        image: UpdateTestimonialDto.image.mimetype,
       },
     });
 
     return updatedService;
   }
 
-  async updateStatus(id: string, statusdto: statusDto): Promise<TestimonialInterface> {
-
-    if (!id || id == '' || id == null) {
-      throw new BadRequestException('ID is required');
-    }
-
-    const serviceExists = await this.prismaService.testimonials.findUnique({ where: { id } });
-
-    if (!serviceExists) {
-      throw new NotFoundException('testimonials not found');
-    }
-
-
-    const updatedtest = await this.prismaService.testimonials.update({
-      where: { id },
-      data: { status: statusdto.status },
-    });
-
-    return updatedtest;
-  }
 
   // Delete testimonials by ID
   async remove(id: string): Promise<void> {
