@@ -44,7 +44,7 @@ export class UsersService {
         role: CreateUserDto.role,
         status: CreateUserDto.status,
         phoneNumber: CreateUserDto.phoneNumber,
-        image: CreateUserDto.image.filename + CreateUserDto.image.size,
+        image: CreateUserDto.image.mimetype,
       }
     })
 
@@ -68,16 +68,22 @@ export class UsersService {
   }
 
   // Get all services with pagination and optional status filter
-  async findAllPaginated(paginated: PaginationDto): Promise<UserInterface[]> {
+  async findAllPaginated(paginated: PaginationDto): Promise<{ totalCount: number; users: UserInterface[] }> {
 
     const { page, pageSize } = paginated;
 
-    const services = await this.prismaService.user.findMany({
+    // Get total count of users
+    const totalCount = await this.prismaService.user.count();
+
+    const users = await this.prismaService.user.findMany({
       skip: (page - 1) * pageSize,
       take: pageSize,
     });
 
-    return services;
+    return {
+      totalCount,
+      users,
+    }
   }
 
   // Update userby ID
@@ -104,7 +110,7 @@ export class UsersService {
         role: UpdateUserDto.role,
         status: UpdateUserDto.status,
         phoneNumber: UpdateUserDto.phoneNumber,
-        image: UpdateUserDto.image.filename + UpdateUserDto.image.size,
+        image: UpdateUserDto.image.mimetype,
       },
     });
 

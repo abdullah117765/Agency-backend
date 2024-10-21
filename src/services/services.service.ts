@@ -34,7 +34,7 @@ export class ServicesService {
         description: createServiceDto.description,
         status: createServiceDto.status,
         price: createServiceDto.price,
-        image: createServiceDto.image.mimetype + createServiceDto.image.size,
+        image: createServiceDto.image.mimetype,
       }
     })
 
@@ -58,16 +58,25 @@ export class ServicesService {
   }
 
   // Get all services with pagination and optional status filter
-  async findAllPaginated(paginated: PaginationDto): Promise<ServiceInterface[]> {
+  async findAllPaginated(paginated: PaginationDto): Promise<{ totalCount: number; services: ServiceInterface[] }> {
 
     const { page, pageSize } = paginated;
+
+
+    // Get total count of services
+    const totalCount = await this.prismaService.service.count();
+
 
     const services = await this.prismaService.service.findMany({
       skip: (page - 1) * pageSize,
       take: pageSize,
     });
 
-    return services;
+    return {
+      totalCount,
+      services
+
+    }
   }
 
   // Update service by ID
@@ -90,7 +99,7 @@ export class ServicesService {
         description: updateServiceDto.description,
         status: updateServiceDto.status,
         price: updateServiceDto.price,
-        image: updateServiceDto.image.filename + updateServiceDto.image.size,
+        image: updateServiceDto.image.mimetype,
       },
     });
 
