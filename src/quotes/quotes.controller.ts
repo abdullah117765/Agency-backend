@@ -20,6 +20,17 @@ export class QuotesController {
   constructor(private readonly quotesService: QuotesService) { }
 
 
+
+  // New endpoint to get the 3 most recent contacts
+  @Get('/recent')
+  @ApiOperation({ summary: 'Get the 3 most recent quotes' })
+  async getRecentQuotes() {
+    return this.quotesService.getRecentQuotes();
+  }
+
+
+
+
   @ApiOperation({ summary: 'get all the quotes paginated' })
   @Get('/paginated')
   getPaginatedRatings(@Query() Paginated: PaginationDto) {

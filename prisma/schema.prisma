@@ -21,6 +21,7 @@ model Quote {
   services     String
   NoOfServices Int
   comments     String
+  createdAt   DateTime @default(now())
 }
 model Contact {
   id           String   @id @default(auto()) @map("_id") @db.ObjectId
@@ -28,6 +29,7 @@ model Contact {
   email        String
   phone        String
   message     String
+  createdAt   DateTime @default(now())
 }
 
 model Service {

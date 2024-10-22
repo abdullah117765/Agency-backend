@@ -52,17 +52,25 @@ export class QuotesService {
   }
 
   // Get all quotes with pagination and optional status filter
-  async findAllPaginated(paginated: PaginationDto): Promise<QuoteInterface[]> {
+  async findAllPaginated(paginated: PaginationDto): Promise<{ totalCount: number; quote: QuoteInterface[] }> {
 
     const { page, pageSize } = paginated;
 
-    const quotes = await this.prismaService.quote
+
+    // Get total count of services
+    const totalCount = await this.prismaService.quote.count();
+
+
+    const quote = await this.prismaService.quote
       .findMany({
         skip: (page - 1) * pageSize,
         take: pageSize,
       });
 
-    return quotes;
+    return {
+      totalCount,
+      quote
+    };
   }
 
   // Update quote by ID
@@ -110,5 +118,20 @@ export class QuotesService {
     await this.prismaService.quote
       .delete({ where: { id } });
   }
+
+
+  // New service method to get the 3 most recent contacts
+  async getRecentQuotes(): Promise<QuoteInterface[]> {
+    const recentQuotes = await this.prismaService.quote.findMany({
+      orderBy: { createdAt: 'desc' },
+      take: 3,
+    });
+
+    return recentQuotes;
+  }
+
+
+
+
 }
 

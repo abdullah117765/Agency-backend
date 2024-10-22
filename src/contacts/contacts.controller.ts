@@ -22,6 +22,28 @@ export class ContactsController {
   constructor(private readonly contactsService: ContactsService) { }
 
 
+
+  // New endpoint to get the 3 most recent contacts
+  @Get('/recent')
+  @ApiOperation({ summary: 'Get the 3 most recent contacts' })
+  async getRecentContacts() {
+    return this.contactsService.getRecentContacts();
+  }
+
+
+  @ApiOperation({ summary: 'Create a new service' })
+  @Post()
+  async create(
+    @Body() createContactDto: CreateContactDto,
+  ) {
+    console.log('Received Contact DTO:', createContactDto);
+
+    return this.contactsService.create(createContactDto);
+  }
+
+
+
+
   @ApiOperation({ summary: 'get all the quotes paginated' })
   @Get('/paginated')
   getPaginatedRatings(@Query() Paginated: PaginationDto) {
@@ -29,17 +51,6 @@ export class ContactsController {
   }
 
 
-  // Configure multer for file upload and store in "pictures" folder
-  @Post()
-  @ApiOperation({ summary: 'Create a new service' })
-
-
-  async create(
-    @Body() CreateContactDto: CreateContactDto,
-  ) {
-
-    return this.contactsService.create(CreateContactDto);
-  }
 
 
   @Get('findone/:id')

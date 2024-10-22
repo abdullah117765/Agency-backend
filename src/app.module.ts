@@ -10,6 +10,8 @@ import { ServicesModule } from './services/services.module';
 import { TestimonialsModule } from './testimonials/testimonials.module';
 import { UsersModule } from './users/users.module';
 import { UtilsModule } from './utils/utils.module';
+import { AnalyticsModule } from './analytics/analytics.module';
+
 
 @Module({
   imports: [
@@ -19,7 +21,7 @@ import { UtilsModule } from './utils/utils.module';
       expandVariables: true,
     }),
     //, 
-    PrismaModule, ServicesModule, UtilsModule, TestimonialsModule, UsersModule, QuotesModule, ContactsModule, BlogsModule],
+    PrismaModule, ServicesModule, UtilsModule, TestimonialsModule, UsersModule, QuotesModule, ContactsModule, BlogsModule, AnalyticsModule],
   controllers: [AppController],
   providers: [AppService],
 })
