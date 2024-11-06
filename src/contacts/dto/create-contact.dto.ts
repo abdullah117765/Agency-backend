@@ -7,14 +7,14 @@ export class CreateContactDto {
     @ApiProperty()
     @IsNotEmpty()
     @IsString()
-    @MaxLength(20)
+    @MaxLength(30)
     fullName: string;
 
 
     @ApiProperty()
     @IsNotEmpty()
     @IsString()
-    @MaxLength(120)
+    @MaxLength(400)
     message: string;
 
 

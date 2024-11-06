@@ -13,13 +13,13 @@ export class CreateServiceDto {
     @ApiProperty({ description: 'The title of the service' })
     @IsNotEmpty()
     @IsString()
-    @MaxLength(40)
+    @MaxLength(60)
     title: string;
 
     @ApiProperty({ description: 'The description of the service' })
     @IsNotEmpty()
     @IsString()
-    @MaxLength(127)
+    @MaxLength(400)
     description: string;
 
     @ApiProperty({ type: 'string', format: 'binary', required: true })

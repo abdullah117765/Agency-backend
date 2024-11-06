@@ -12,13 +12,13 @@ export class CreateTestimonialDto {
     @ApiProperty({ description: 'The full name the person  writing the testimonial' })
     @IsNotEmpty()
     @IsString()
-    @MaxLength(30)
+    @MaxLength(40)
     fullName: string;
 
     @ApiProperty({ description: 'The description of the testimonial' })
     @IsNotEmpty()
     @IsString()
-    @MaxLength(127)
+    @MaxLength(400)
     description: string;
 
     @ApiProperty({ type: 'string', format: 'binary', required: true })

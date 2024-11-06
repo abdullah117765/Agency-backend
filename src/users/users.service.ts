@@ -25,6 +25,8 @@ export class UsersService {
 
   // Create new user
   async create(CreateUserDto: CreateUserDto): Promise<UserInterface> {
+
+
     const serviceExists = await this.prismaService.user.findFirst({
       where: { email: CreateUserDto.email },
     });
@@ -33,7 +35,21 @@ export class UsersService {
       throw new Error('user with this email already exists');
     }
 
-    console.log(CreateUserDto.image);
+    let imageUrl;
+    const media = CreateUserDto.image;
+
+
+    // Upload image to S3
+
+    if (media) {
+      this.utilsService.validateImageType(media);
+      imageUrl = await this.utilsService.s3uploadFile(media);
+    }
+
+
+
+
+    console.log("aws image", imageUrl.url);
     const newUser = await this.prismaService.user.create({
       data: {
         fullname: CreateUserDto.fullname,
@@ -44,7 +60,7 @@ export class UsersService {
         role: CreateUserDto.role,
         status: CreateUserDto.status,
         phoneNumber: CreateUserDto.phoneNumber,
-        image: CreateUserDto.image.mimetype,
+        image: imageUrl.url,
       }
     })
 
@@ -93,11 +109,29 @@ export class UsersService {
       throw new BadRequestException('ID is required');
     }
 
-    const serviceExists = await this.prismaService.user.findUnique({ where: { id } });
+    const userExists = await this.prismaService.user.findUnique({ where: { id } });
 
-    if (!serviceExists) {
+    if (!userExists) {
       throw new NotFoundException('usernot found');
     }
+
+    let imageUrl;
+    const media = UpdateUserDto.image;
+
+
+    // delete previous one
+    // Upload  new image to S3
+
+    if (media) {
+      this.utilsService.validateImageType(media);
+
+      const Key = userExists.image.split('/').pop();
+      await this.utilsService.s3deleteFile(Key);
+
+
+      imageUrl = await this.utilsService.s3uploadFile(media);
+    }
+
 
     const updatedService = await this.prismaService.user.update({
       where: { id },
@@ -110,7 +144,7 @@ export class UsersService {
         role: UpdateUserDto.role,
         status: UpdateUserDto.status,
         phoneNumber: UpdateUserDto.phoneNumber,
-        image: UpdateUserDto.image.mimetype,
+        image: imageUrl.url,
       },
     });
 
@@ -139,17 +173,24 @@ export class UsersService {
   }
 
   // Delete userby ID
-  async remove(id: string): Promise<void> {
+  async remove(id: string): Promise<any> {
 
     if (!id || id == '' || id == null) {
       throw new BadRequestException('ID is required');
     }
     const serviceExists = await this.prismaService.user.findUnique({ where: { id } });
 
+
+    const Key = serviceExists.image.split('/').pop();
+    await this.utilsService.s3deleteFile(Key);
+
+
+
     if (!serviceExists) {
       throw new NotFoundException('user not found');
     }
 
-    await this.prismaService.user.delete({ where: { id } });
+    return await this.prismaService.user.delete({ where: { id } });
+
   }
 }

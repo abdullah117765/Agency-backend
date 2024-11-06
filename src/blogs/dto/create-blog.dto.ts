@@ -11,14 +11,14 @@ export class CreateBlogDto {
     @ApiProperty({ description: 'The title of the blog ' })
     @IsNotEmpty()
     @IsString()
-    @MaxLength(40)
+    @MaxLength(80)
     title: string;
 
 
     @ApiProperty({ description: 'name of the author' })
     @IsNotEmpty()
     @IsString()
-    @MaxLength(30)
+    @MaxLength(40)
     author: string;
 
 

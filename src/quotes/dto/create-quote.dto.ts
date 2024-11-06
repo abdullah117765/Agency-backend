@@ -36,14 +36,14 @@ export class CreateQuoteDto {
     @ApiProperty({ description: 'Services' })
     @IsNotEmpty()
     @IsString()
-    @MaxLength(30)
+    @MaxLength(400)
     services: string;
 
 
     @ApiProperty({ description: 'comment ' })
     @IsNotEmpty()
     @IsString()
-    @MaxLength(120)
+    @MaxLength(400)
     comments: string;
 
 

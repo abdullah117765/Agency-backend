@@ -12,7 +12,7 @@ export class CreateUserDto {
     @ApiProperty({ description: 'Full name of the servicuser' })
     @IsNotEmpty()
     @IsString()
-    @MaxLength(30)
+    @MaxLength(40)
     fullname: string;
 
     @ApiProperty({ description: 'role of the user' })
