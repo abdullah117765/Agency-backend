@@ -45,15 +45,24 @@ export class TestimonialsService {
   // Create new testimonials
   async create(CreateTestimonialDto: CreateTestimonialDto): Promise<TestimonialInterface> {
 
-    let imageString = CreateTestimonialDto.image.mimetype + CreateTestimonialDto.image.size;
-    console.log("imageString", imageString);
-    console.log("image", CreateTestimonialDto.image);
+
+    let imageUrl;
+    const media = CreateTestimonialDto.image;
+
+
+    // Upload image to S3
+
+    if (media) {
+      this.utilsService.validateImageType(media);
+      imageUrl = await this.utilsService.s3uploadFile(media);
+    }
+
     const newtestimonila = await this.prismaService.testimonials.create({
       data: {
         fullName: CreateTestimonialDto.fullName,
         description: CreateTestimonialDto.description,
         status: CreateTestimonialDto.status,
-        image: CreateTestimonialDto.image.mimetype,
+        image: imageUrl.url,
       }
     })
 
@@ -109,13 +118,34 @@ export class TestimonialsService {
       throw new NotFoundException('testimonials not found');
     }
 
+
+    let imageUrl;
+    const media = UpdateTestimonialDto.image;
+
+
+    // delete previous one
+    // Upload  new image to S3
+
+    if (media) {
+      this.utilsService.validateImageType(media);
+
+      const Key = serviceExists.image.split('/').pop();
+      await this.utilsService.s3deleteFile(Key);
+
+
+      imageUrl = await this.utilsService.s3uploadFile(media);
+    }
+
+
+
+
     const updatedService = await this.prismaService.testimonials.update({
       where: { id },
       data: {
         fullName: UpdateTestimonialDto.fullName,
         description: UpdateTestimonialDto.description,
         status: UpdateTestimonialDto.status,
-        image: UpdateTestimonialDto.image.mimetype,
+        image: imageUrl.url,
       },
     });
 
@@ -124,17 +154,24 @@ export class TestimonialsService {
 
 
   // Delete testimonials by ID
-  async remove(id: string): Promise<void> {
+  async remove(id: string): Promise<any> {
 
     if (!id || id == '' || id == null) {
       throw new BadRequestException('ID is required');
     }
     const serviceExists = await this.prismaService.testimonials.findUnique({ where: { id } });
 
+
+
+    const Key = serviceExists.image.split('/').pop();
+    await this.utilsService.s3deleteFile(Key);
+
+
+
     if (!serviceExists) {
       throw new NotFoundException('tetimonial not found');
     }
 
-    await this.prismaService.testimonials.delete({ where: { id } });
+    return await this.prismaService.testimonials.delete({ where: { id } });
   }
 }
