@@ -28,6 +28,19 @@ export class BlogsService {
       throw new Error('Service with this title already exists');
     }
 
+
+    let imageUrl;
+    const media = CreateBlogDto.image;
+
+
+    // Upload image to S3
+
+    if (media) {
+      this.utilsService.validateImageType(media);
+      imageUrl = await this.utilsService.s3uploadFile(media);
+    }
+
+
     console.log(CreateBlogDto.image);
     const newService = await this.prismaService.blogs.create({
       data: {
@@ -35,7 +48,7 @@ export class BlogsService {
         description: CreateBlogDto.description,
         status: CreateBlogDto.status,
         author: CreateBlogDto.author,
-        image: CreateBlogDto.image.mimetype,
+        image: imageUrl.url,
       }
     })
 
@@ -90,6 +103,26 @@ export class BlogsService {
       throw new NotFoundException('blog not found');
     }
 
+    let imageUrl;
+    const media = UpdateBlogDto.image;
+
+
+    // delete previous one
+    // Upload  new image to S3
+
+    if (media) {
+      this.utilsService.validateImageType(media);
+
+      const Key = serviceExists.image.split('/').pop();
+      await this.utilsService.s3deleteFile(Key);
+
+
+      imageUrl = await this.utilsService.s3uploadFile(media);
+    }
+
+
+
+
     const updatedService = await this.prismaService.blogs.update({
       where: { id },
       data: {
@@ -97,7 +130,7 @@ export class BlogsService {
         description: UpdateBlogDto.description,
         status: UpdateBlogDto.status,
         author: UpdateBlogDto.author,
-        image: UpdateBlogDto.image.mimetype,
+        image: imageUrl.url,
       },
     });
 
@@ -132,6 +165,11 @@ export class BlogsService {
       throw new BadRequestException('ID is required');
     }
     const serviceExists = await this.prismaService.blogs.findUnique({ where: { id } });
+
+
+    const Key = serviceExists.image.split('/').pop();
+    await this.utilsService.s3deleteFile(Key);
+
 
     if (!serviceExists) {
       throw new NotFoundException('blog not found');

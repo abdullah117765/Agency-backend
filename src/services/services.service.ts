@@ -27,6 +27,18 @@ export class ServicesService {
       throw new Error('Service with this title already exists');
     }
 
+    let imageUrl;
+    const media = createServiceDto.image;
+
+
+    // Upload image to S3
+
+    if (media) {
+      this.utilsService.validateImageType(media);
+      imageUrl = await this.utilsService.s3uploadFile(media);
+    }
+
+
     console.log(createServiceDto.image);
     const newService = await this.prismaService.service.create({
       data: {
@@ -34,7 +46,7 @@ export class ServicesService {
         description: createServiceDto.description,
         status: createServiceDto.status,
         price: createServiceDto.price,
-        image: createServiceDto.image.mimetype,
+        image: imageUrl.url,
       }
     })
 
@@ -92,6 +104,26 @@ export class ServicesService {
       throw new NotFoundException('Service not found');
     }
 
+
+    let imageUrl;
+    const media = updateServiceDto.image;
+
+
+    // delete previous one
+    // Upload  new image to S3
+
+    if (media) {
+      this.utilsService.validateImageType(media);
+
+      const Key = serviceExists.image.split('/').pop();
+      await this.utilsService.s3deleteFile(Key);
+
+
+      imageUrl = await this.utilsService.s3uploadFile(media);
+    }
+
+
+
     const updatedService = await this.prismaService.service.update({
       where: { id },
       data: {
@@ -99,7 +131,7 @@ export class ServicesService {
         description: updateServiceDto.description,
         status: updateServiceDto.status,
         price: updateServiceDto.price,
-        image: updateServiceDto.image.mimetype,
+        image: imageUrl.url,
       },
     });
 
@@ -134,6 +166,10 @@ export class ServicesService {
       throw new BadRequestException('ID is required');
     }
     const serviceExists = await this.prismaService.service.findUnique({ where: { id } });
+
+    const Key = serviceExists.image.split('/').pop();
+    await this.utilsService.s3deleteFile(Key);
+
 
     if (!serviceExists) {
       throw new NotFoundException('Service not found');
