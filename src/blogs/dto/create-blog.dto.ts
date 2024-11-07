@@ -24,7 +24,7 @@ export class CreateBlogDto {
 
     @ApiProperty({ description: 'The description of the blog' })
     @IsNotEmpty()
-    @IsString()
+    @MaxLength(3000)
     description: string;
 
     @ApiProperty({ type: 'string', format: 'binary', required: true })

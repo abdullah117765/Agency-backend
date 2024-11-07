@@ -105,7 +105,7 @@ export class BlogsService {
 
     let imageUrl;
     const media = UpdateBlogDto.image;
-
+    let updatedService;
 
     // delete previous one
     // Upload  new image to S3
@@ -118,23 +118,35 @@ export class BlogsService {
 
 
       imageUrl = await this.utilsService.s3uploadFile(media);
+
+      updatedService = await this.prismaService.blogs.update({
+        where: { id },
+        data: {
+          title: UpdateBlogDto.title,
+          description: UpdateBlogDto.description,
+          status: UpdateBlogDto.status,
+          author: UpdateBlogDto.author,
+          image: imageUrl.url,
+        },
+      });
+
+      return updatedService;
+
+    } else {
+      updatedService = await this.prismaService.blogs.update({
+        where: { id },
+        data: {
+          title: UpdateBlogDto.title,
+          description: UpdateBlogDto.description,
+          status: UpdateBlogDto.status,
+          author: UpdateBlogDto.author,
+          
+        },
+      });
+
+      return updatedService;
     }
 
-
-
-
-    const updatedService = await this.prismaService.blogs.update({
-      where: { id },
-      data: {
-        title: UpdateBlogDto.title,
-        description: UpdateBlogDto.description,
-        status: UpdateBlogDto.status,
-        author: UpdateBlogDto.author,
-        image: imageUrl.url,
-      },
-    });
-
-    return updatedService;
   }
 
   async updateStatus(id: string, statusdto: statusDto): Promise<BlogInterface> {

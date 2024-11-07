@@ -16,9 +16,9 @@ import {
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiConsumes, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { PaginationDto, statusDto } from 'src/services/dto/create-service.dto';
-import { UpdateServiceDto } from 'src/services/dto/update-service.dto';
 import { BlogsService } from './blogs.service';
 import { CreateBlogDto } from './dto/create-blog.dto';
+import { UpdateBlogDto } from './dto/update-blog.dto';
 
 @ApiTags('blogs')
 @Controller('blogs')
@@ -110,7 +110,7 @@ export class BlogsController {
 
   async update(
     @Param('id') id: string,
-    @Body() updateServiceDto: UpdateServiceDto,
+    @Body() updateServiceDto: UpdateBlogDto,
     @UploadedFile() file: Express.Multer.File,
   ) {
     if (file) {
