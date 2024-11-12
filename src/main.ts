@@ -39,6 +39,10 @@ async function bootstrap() {
   //   prefix: "/template",
   // });
 
+  // Enable trust proxy to get IP addresses behind proxies
+  app.enable('trust proxy');
+
+  
   app.setGlobalPrefix(globalPrefix);
   app.useGlobalPipes(new ValidationPipe({ transform: true }));
 

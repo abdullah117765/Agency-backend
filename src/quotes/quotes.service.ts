@@ -124,7 +124,7 @@ export class QuotesService {
   async getRecentQuotes(): Promise<QuoteInterface[]> {
     const recentQuotes = await this.prismaService.quote.findMany({
       orderBy: { createdAt: 'desc' },
-      take: 3,
+      take: 4,
     });
 
     return recentQuotes;

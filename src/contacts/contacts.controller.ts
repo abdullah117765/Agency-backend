@@ -25,7 +25,7 @@ export class ContactsController {
 
   // New endpoint to get the 3 most recent contacts
   @Get('/recent')
-  @ApiOperation({ summary: 'Get the 3 most recent contacts' })
+  @ApiOperation({ summary: 'Get the 4 most recent contacts' })
   async getRecentContacts() {
     return this.contactsService.getRecentContacts();
   }

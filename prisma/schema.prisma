@@ -74,6 +74,12 @@ model blogs {
   createdAt   DateTime @default(now()) // Add createdAt field with default value
 }
 
+model Visitor {
+   id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  ip        String   @unique
+  userAgent String
+  createdAt DateTime @default(now())
+}
 
 
 

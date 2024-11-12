@@ -124,7 +124,7 @@ export class ContactsService {
   async getRecentContacts(): Promise<ContactInterface[]> {
     const recentContacts = await this.prismaService.contact.findMany({
       orderBy: { createdAt: 'desc' },
-      take: 3,
+      take: 4,
     });
 
     return recentContacts;
