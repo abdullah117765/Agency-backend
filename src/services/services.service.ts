@@ -80,6 +80,7 @@ export class ServicesService {
 
 
     const services = await this.prismaService.service.findMany({
+      where: { status: "active" },
       skip: (page - 1) * pageSize,
       take: pageSize,
     });

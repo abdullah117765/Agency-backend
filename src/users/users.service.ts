@@ -92,6 +92,7 @@ export class UsersService {
     const totalCount = await this.prismaService.user.count();
 
     const users = await this.prismaService.user.findMany({
+      where: { status: "active" },
       skip: (page - 1) * pageSize,
       take: pageSize,
     });

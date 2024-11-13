@@ -80,6 +80,7 @@ export class BlogsService {
     const totalCount = await this.prismaService.blogs.count();
 
     const blogs = await this.prismaService.blogs.findMany({
+      where: { status: "active" },
       skip: (page - 1) * pageSize,
       take: pageSize,
     });

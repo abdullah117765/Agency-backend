@@ -62,6 +62,7 @@ export class QuotesService {
 
 
     const quote = await this.prismaService.quote
+    
       .findMany({
         skip: (page - 1) * pageSize,
         take: pageSize,

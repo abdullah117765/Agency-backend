@@ -11,6 +11,7 @@ import { TestimonialsModule } from './testimonials/testimonials.module';
 import { UsersModule } from './users/users.module';
 import { UtilsModule } from './utils/utils.module';
 import { AnalyticsModule } from './analytics/analytics.module';
+import { ProjectsModule } from './projects/projects.module';
 
 
 @Module({
@@ -21,7 +22,7 @@ import { AnalyticsModule } from './analytics/analytics.module';
       expandVariables: true,
     }),
     //, 
-    PrismaModule, ServicesModule, UtilsModule, TestimonialsModule, UsersModule, QuotesModule, ContactsModule, BlogsModule, AnalyticsModule],
+    PrismaModule, ServicesModule, UtilsModule, TestimonialsModule, UsersModule, QuotesModule, ContactsModule, BlogsModule, AnalyticsModule, ProjectsModule],
   controllers: [AppController],
   providers: [AppService],
 })

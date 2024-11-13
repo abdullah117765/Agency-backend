@@ -94,6 +94,7 @@ export class TestimonialsService {
 
     // Get paginated testimonials
     const testimonials = await this.prismaService.testimonials.findMany({
+      where: { status: "active" },
       skip: (page - 1) * pageSize,
       take: pageSize,
     });

@@ -82,5 +82,12 @@ model Visitor {
 }
 
 
-
+model Projects {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  title       String   
+  description String   
+  image       String    // Store the image path in the DB 
+  status      String   @default("active")
+  createdAt DateTime @default(now())
+}
 
