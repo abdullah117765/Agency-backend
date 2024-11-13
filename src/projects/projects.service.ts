@@ -73,7 +73,7 @@ export class ProjectsService {
     // Get all projects with pagination and optional status filter
     async findAllPaginated(paginated: PaginationDto): Promise<{ totalCount: number; projects: ProjectInterface[] }> {
 
-        const { page, pageSize } = paginated;
+        const { page, pageSize, status } = paginated;
 
 
         // Get total count of projects
@@ -81,7 +81,7 @@ export class ProjectsService {
 
 
         const projects = await this.prismaService.projects.findMany({
-            where: {status:"active"},
+            where: {status:status},
             skip: (page - 1) * pageSize,
             take: pageSize,
         });

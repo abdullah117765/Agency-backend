@@ -72,7 +72,7 @@ export class ServicesService {
   // Get all services with pagination and optional status filter
   async findAllPaginated(paginated: PaginationDto): Promise<{ totalCount: number; services: ServiceInterface[] }> {
 
-    const { page, pageSize } = paginated;
+    const { page, pageSize,status } = paginated;
 
 
     // Get total count of services
@@ -80,7 +80,7 @@ export class ServicesService {
 
 
     const services = await this.prismaService.service.findMany({
-      where: { status: "active" },
+      where: { status: status },
       skip: (page - 1) * pageSize,
       take: pageSize,
     });

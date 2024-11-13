@@ -74,13 +74,13 @@ export class BlogsService {
   // Get all blogs with pagination and optional status filter
   async findAllPaginated(paginated: PaginationDto): Promise<{ totalCount: number; blogs: BlogInterface[] }> {
 
-    const { page, pageSize } = paginated;
+    const { page, pageSize,status } = paginated;
 
     // Get total count of blogs
     const totalCount = await this.prismaService.blogs.count();
 
     const blogs = await this.prismaService.blogs.findMany({
-      where: { status: "active" },
+      where: { status: status },
       skip: (page - 1) * pageSize,
       take: pageSize,
     });

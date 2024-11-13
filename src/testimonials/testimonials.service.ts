@@ -87,14 +87,14 @@ export class TestimonialsService {
 
   // Get all services with pagination and optional status filter
   async findAllPaginated(paginated: PaginationDto): Promise<{ totalCount: number; testimonials: TestimonialInterface[] }> {
-    const { page, pageSize } = paginated;
+    const { page, pageSize, status } = paginated;
 
     // Get total count of testimonials
     const totalCount = await this.prismaService.testimonials.count();
 
     // Get paginated testimonials
     const testimonials = await this.prismaService.testimonials.findMany({
-      where: { status: "active" },
+      where: { status: status},
       skip: (page - 1) * pageSize,
       take: pageSize,
     });

@@ -48,6 +48,11 @@ export class PaginationDto {
     @Transform(({ value }: TransformFnParams) => parseInt(value))
     pageSize: number = 6;
 
+    @ApiProperty({ required: false })
+    @IsIn(['active'])
+    @IsOptional()
+    status: string;
+
 }
 
 

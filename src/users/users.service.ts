@@ -86,13 +86,13 @@ export class UsersService {
   // Get all services with pagination and optional status filter
   async findAllPaginated(paginated: PaginationDto): Promise<{ totalCount: number; users: UserInterface[] }> {
 
-    const { page, pageSize } = paginated;
+    const { page, pageSize, status } = paginated;
 
     // Get total count of users
     const totalCount = await this.prismaService.user.count();
 
     const users = await this.prismaService.user.findMany({
-      where: { status: "active" },
+      where: { status: status},
       skip: (page - 1) * pageSize,
       take: pageSize,
     });
