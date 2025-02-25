@@ -1,0 +1,16 @@
+version: 2
+
+# Set the build tools and versions
+build:
+  os: ubuntu-22.04
+  tools:
+    python: "3.9"
+
+# Define the Python environment
+python:
+  install:
+    - requirements: docs/requirements.txt
+
+# Sphinx configuration
+sphinx:
+  configuration: docs/source/conf.py
