@@ -26,6 +26,8 @@ export class BlogsController {
   constructor(private readonly blogsService: BlogsService) { }
 
 
+/* This code snippet defines a PATCH endpoint in the `BlogsController` class of a NestJS application.
+Here's what it does: */
   @Patch('status/:id')
   @ApiOperation({ summary: 'Update a status by ID' })
   async updateStatus(
@@ -37,6 +39,8 @@ export class BlogsController {
 
 
 
+/* This section of code is defining a GET endpoint in the `BlogsController` class of a NestJS
+application. Here's what it does: */
   @ApiOperation({ summary: 'get all the servies paginated' })
   @Get('/paginated')
   getPaginatedRatings(@Query() Paginated: PaginationDto) {
@@ -45,6 +49,8 @@ export class BlogsController {
 
 
   // Configure multer for file upload and store in "pictures" folder
+  /* This code snippet defines a POST endpoint in the `BlogsController` class of a NestJS application.
+  Here's what it does: */
   @Post()
   @ApiOperation({ summary: 'Create a new service' })
   @UseInterceptors(
